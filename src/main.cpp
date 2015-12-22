@@ -1,62 +1,49 @@
-#include <iostream>
+#include <cstdio>
 
 #define GL_GLEXT_PROTOTYPES
 #include <GLFW/glfw3.h>
 
+#include <glbinding/gl/gl.h>
+#include <glbinding/Binding.h>
+
+using namespace gl;
+
 int main(int argc, char* argv[]) {
 
-    int width = 800;
-    int height = 600;
+    const int width = 800;
+    const int height = 600;
 
-    // Create a windowed mode window and its OpenGL context
+    // Load GLFW and Create a Window
     GLFWwindow* main_window = nullptr;
-
-    // Initialize the windowing library
-    if (!glfwInit()) {
-        return -1;
-    }
-
-    // Create a windowed mode window and its OpenGL context
+    glfwInit();
     glfwWindowHint(GLFW_SAMPLES, 2);
     main_window = glfwCreateWindow(width, height, "Opengl Demos", nullptr, nullptr);
+
+    // Check for Valid Context
     if (!main_window) {
         glfwTerminate();
         return 1;
     }
-
-    // Make the main_window's context current
     glfwMakeContextCurrent(main_window);
 
-    // Set input callbacks
-    //glfwSetWindowSizeCallback(main_window, window_size_callback);
-    //glfwSetMouseButtonCallback(main_window, mouse_button_callback);
-    //glfwSetCursorPosCallback(main_window, cursor_pos_callback);
-    //glfwSetScrollCallback(main_window, scroll_callback);
-    //glfwSetKeyCallback(main_window, key_callback);
-    //glfwSetDropCallback(main_window, drop_callback);
+    // Create Context and Load OpenGL Functions
+    glbinding::Binding::initialize();
+    fprintf(stderr, "OpenGL %s\n", glGetString(GL_VERSION));
+    glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
 
-    // Setup graphics
-    // Any Opengl Inits
-
-
-    double lastTime = glfwGetTime();
-
-    glfwSwapInterval(0);
-
-    if (!main_window) { std::cout<<"WHat??"; }
-
-    // Loop until the user closes the window
+    //Rendering Loop
     while (!glfwWindowShouldClose(main_window)) {
+        if (glfwGetKey(main_window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+            glfwSetWindowShouldClose(main_window, true);
+        }
 
-        double currentTime = glfwGetTime();
-        double delta = currentTime - lastTime;
-        lastTime = currentTime;
+        // Background Fill Color
+        glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
 
-        // Render
-        // My Update and Render calls
-
-        // Swap front and back buffers
+        // Flip Buffers and Draw
         glfwSwapBuffers(main_window);
+        glfwPollEvents();
     }
 
     glfwTerminate();
