@@ -7,12 +7,15 @@ option(GLFW_BUILD_EXAMPLES OFF)
 option(GLFW_BUILD_TESTS OFF)
 add_subdirectory(dependencies/glfw)
 
+add_subdirectory(dependencies/glbinding)
+
 #set(CMAKE_BUILD_TYPE Debug)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -std=c++14 -g")
 
 include_directories(dependencies/glfw/include
-    dependencies/glm/)
+    dependencies/glm/
+    dependencies/glbinding/source/glbinding/include)
 
 file(GLOB
     PROJECT_HEADERS
@@ -51,9 +54,7 @@ add_executable(${PROJECT_NAME}
     ${PROJECT_HEADERS}
     ${PROJECT_SHADERS}
     ${PROJECT_CONFIGS})
-target_link_libraries(${PROJECT_NAME}
-    glfw
-    ${GLFW_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} glfw ${GLFW_LIBRARIES} glbinding ${GLBINDING_LIBRARIES} ${OPENGL_LIBRARIES})
 set_target_properties(${PROJECT_NAME}
     PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY
